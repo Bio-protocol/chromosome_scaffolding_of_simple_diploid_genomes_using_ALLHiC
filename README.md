@@ -19,8 +19,8 @@ High-throughput chromosome conformation capture (Hi-C) technology has become an 
     - [ParaFly](http://parafly.sourceforge.net)
     - [3D-DNA](https://github.com/aidenlab/3d-dna)
     - [juicebox_scripts](https://github.com/phasegenomics/juicebox_scripts)
-    - Perl 5
-    - Python 3
+    - [Perl 5](https://www.perl.org/)
+    - [Python 3](https://www.python.org/)
     - [Matplotlib](https://matplotlib.org)
     - [Pandas](https://pandas.pydata.org)
     - [Numpy](https://www.numpy.org)
@@ -72,7 +72,7 @@ High-throughput chromosome conformation capture (Hi-C) technology has become an 
 
 ## Input Data
 This pipeline require *de novo* assembly and Hi-C data. 
-- Draft assembly
+- *de novo* assembly
 - Hi-C data
 
 ## Major steps
