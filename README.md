@@ -74,6 +74,14 @@ High-throughput chromosome conformation capture (Hi-C) technology has become an 
 This pipeline require *de novo* assembly and Hi-C data. 
 - *de novo* assembly
 - Hi-C data
+And, a small testing data sets could download from [google drive sharing](https://drive.google.com/file/d/1oE6HpOTZ6rFSlVLOjO0EpIH_-cULCWec/view?usp=sharing). 
+    ```
+    Bio-protocol_2204520_data
+    ├── draft.asm.fasta
+    ├── Lib_R1.fastq.gz
+    ├── Lib_R2.fastq.gz
+    └── ref.chr.fasta
+    ```
 
 ## Major steps
 ### Step 1: Correction of the draft contigs [Optional]
