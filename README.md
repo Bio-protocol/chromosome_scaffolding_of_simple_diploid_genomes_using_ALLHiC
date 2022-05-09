@@ -158,7 +158,8 @@ ALLHiC_build seq.HiCcorrected.fasta
 - Plot the heatmap of whole genome and per chromosome.  
     a. Get group length.
     ```bash
-    getFaLen.pl -i groups.review.fasta -o len.txt
+    samtools faidx groups.review.fasta 
+    cut -f 1,2 groups.review.fasta.fai > len.txt
     ```
     b. Only keep chromosomal level assembly for plotting. 
     ```bash
