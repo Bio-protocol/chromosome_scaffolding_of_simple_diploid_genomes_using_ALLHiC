@@ -21,6 +21,7 @@ High-throughput chromosome conformation capture (Hi-C) technology has become an 
     - [juicebox_scripts](https://github.com/phasegenomics/juicebox_scripts)
     - [Perl 5](https://www.perl.org/)
     - [Python 3](https://www.python.org/)
+    - [pysam](https://pysam.readthedocs.io/)
     - [Matplotlib](https://matplotlib.org)
     - [Pandas](https://pandas.pydata.org)
     - [Numpy](https://www.numpy.org)
@@ -37,7 +38,7 @@ High-throughput chromosome conformation capture (Hi-C) technology has become an 
         ```
     3.	Install the python package of matplotlib, NumPy, and pandas via conda.
         ```bash
-         conda install matplotlib numpy pandas
+         conda install matplotlib numpy pandas pysam
          ```
     4.	Install the ALLHiC, 3D-DNA, juicebox_scripts via Github. We recommend installing these packages into `~/software`.  
         a. ALLHiC
@@ -61,6 +62,7 @@ High-throughput chromosome conformation capture (Hi-C) technology has become an 
         mv asmkit ~/bin
         ```
         b.	ParaFly
+        \* The executable file of ParaFly can be found in the directory of lib/  
         ```bash
         wget https://sourceforge.net/projects/parafly/files/parafly-r2013-01-21.tgz
         tar xzvf parafly-r2013-01-21.tgz
@@ -119,38 +121,53 @@ And, a small testing data sets could download from [google drive sharing](https:
     ```
 
 
-#### Step 3: Partion
+### Step 3: Partion
 ```bash
-ALLHiC_partition -r seq.HiCcorrected.fasta -e enzyme_site (e.g. HindIII: AAGCTT; MboI: GATC) -k group_count -b sample.unique.REduced.paired_only.bam
+ALLHiC_partition -r seq.HiCcorrected.fasta -e HindIII -k 5 -b sample.unique.REduced.paired_only.bam
 ```
-#### Step 4: Optimization
+\* `-e` enzyme_sites, `-k` number of groups
+### Step 4: Optimization
 ```bash
+k=5
 for i in {1..k}
 do 
-    echo “allhic optimize sample.unique.REduced.paired_only.${k}g${i}.counts_RE.txt sample.unique.Reduced.paired_only.clm”; 
+    echo “allhic optimize sample.unique.REduced.paired_only.counts_AAGCTT.${k}g${i}.txt sample.unique.REduced.paired_only.clm”; 
 done > cmd.list
 
 ParaFly -c cmd.list -CPU 4
 ```
-#### Step 5: Building
+\* `k`: number of groups, which mean the number of chromosomes in your genome.
+### Step 5: Building
 ```bash
 ALLHiC_build seq.HiCcorrected.fasta
 ```
-#### Step 6: Curation
+### Step 6: Curation
 - Create a hic format file which can import into the juicebox
     ```bash
-    asmkit bam2links sample.bwa_mem.Reduced.paired_only.bam out.links
+    asmkit bam2links sample.unique.REduced.paired_only.bam out.links
     asmkit agp2assembly groups.agp groups.assembly
-    bash ~/software/3d-dna/visualize/run-assembly-visualizer.sh groups.assembly out.links
+    bash ~/software/3d-dna/visualize/run-assembly-visualizer.sh -p false groups.assembly out.links
     ```
+    \* The 3d-dna needs more than 16 Gb memory to run.   
 
 - Juicebox (https://github.com/aidenlab/Juicebox/wiki) is a graphical software that can be run in local machines (Windows or macOS), which can use to curate the mis-assemblies by Hi-C signals. After careful curation, a modified assembly can be exported.
+    a. import the hic file: `groups.hic`
+    ![](graphs/juicebox_open_steps.jpg)
+
+    b. import assembly file is `groups.assembly`  
+    ![](graphs/juicebox_assembly_import_step.jpg)
+
+    c. manually curation
+    Detail curation methods can learn from a [demo video](https://www.youtube.com/watch?v=Nj7RhQZHM18)
+
+    d. export assembly `group.review.assembly`
+    ![](graphs/juicebox_assembly_export_step.jpg)
 - Convert modified assembly into agp location file and create the final chromosome-scale assembly.
     ```bash
     python ~/software/juicebox_scripts/juicebox_scripts/juicebox_assembly_converter.py -a groups.review.assembly -f seq.HiCcorrected.fasta -s
     ```
 
-#### Step 7: Assessment of the final assembly
+### Step 7: Assessment of the final assembly
 - Statistics of the chromosome length and anchoring rate.  
     ```bash
     statAGP.pl groups.review.agp
